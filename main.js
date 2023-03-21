@@ -12,6 +12,12 @@ class BinarySearchTree{
         node.right = this.buildTree(mid+1, end);
         return node;
     };
+
+
+    search = (root, value) => {
+        if(root === null || root.data === value) return root;
+        return value < root.data ? this.search(root.left, value) : this.search(root.right, value);
+    };
 }
 
 class Node{
@@ -37,6 +43,4 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 
 const bst = new BinarySearchTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 prettyPrint(bst.root);
-
-console.log(bst.insert(2));
-prettyPrint(bst.root);
+console.log(bst.search(bst.root, 3));
