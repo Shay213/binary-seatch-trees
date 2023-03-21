@@ -18,6 +18,14 @@ class BinarySearchTree{
         if(root === null || root.data === value) return root;
         return value < root.data ? this.search(root.left, value) : this.search(root.right, value);
     };
+
+    insert = (root, value) => {
+        if(root === null) return new Node(value);
+
+        value < root.data ? root.left = this.insert(root.left, value) : root.right = this.insert(root.right, value);
+
+        return root;
+    };
 }
 
 class Node{
@@ -43,4 +51,6 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 
 const bst = new BinarySearchTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 prettyPrint(bst.root);
-console.log(bst.search(bst.root, 3));
+
+console.log(bst.insert(bst.root, 2));
+prettyPrint(bst.root);
