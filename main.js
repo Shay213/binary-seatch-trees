@@ -78,7 +78,14 @@ class BinarySearchTree{
         this.preOrder(root.right, callback, result);
         if(!callback) return result;
     };
-    inOrder = () => {};
+    inOrder = (root, callback, result = []) => {
+        if(!root) return;
+
+        this.inOrder(root.left, callback, result);
+        callback ? callback(root) : result.push(root);
+        this.inOrder(root.right, callback, result);
+        if(!callback) return result;
+    };
     postOrder = () => {};
 }
 
@@ -106,4 +113,4 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 const bst = new BinarySearchTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 prettyPrint(bst.root);
 
-console.log(bst.preOrder(bst.root));
+console.log(bst.inOrder(bst.root));
