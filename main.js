@@ -55,6 +55,23 @@ class BinarySearchTree{
         return root;
     };
 
+    levelOrder = (root, callback) => {
+        if(root === null) return;
+        let queue = [];
+        let values = [];
+        queue.push(root);
+        
+        while(!!queue.length){
+            const [firstEl] = queue.splice(0,1);
+            callback ? callback(firstEl) : values.push(firstEl);
+            if(firstEl.left) queue.push(firstEl.left);
+            if(firstEl.right) queue.push(firstEl.right);
+        }
+        if(!callback) return values;
+    };
+
+    
+
 }
 
 class Node{
