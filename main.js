@@ -26,6 +26,35 @@ class BinarySearchTree{
 
         return root;
     };
+
+    minValue = root => {
+        let minV = root.data;
+        while(root.left != null){
+            minV = root.left.data;
+            root = root.left;
+        }
+        return minV;
+    };
+
+    delete = (root, value) => {
+        if(root === null) return root;
+        else if(value < root.data) root.left = this.delete(root.left, value);
+        else if(value > root.data) root.right = this.delete(root.right, value);
+        else{
+            //node with only one child
+            if(root.left === null) return root.right;
+            else if(root.right === null) return root.left;
+            
+            // node with two children: Get the inOrder successor (smallest in the right subtree)
+            root.data = this.minValue(root.right);
+            
+            // delete the inOrder successor
+            root.right = this.delete(root.right, root.data);
+        }
+
+        return root;
+    };
+
 }
 
 class Node{
@@ -54,3 +83,8 @@ prettyPrint(bst.root);
 
 console.log(bst.insert(bst.root, 2));
 prettyPrint(bst.root);
+
+console.log(bst.delete(bst.root, 67));
+prettyPrint(bst.root);
+
+bst.levelOrder(bst.root, el => console.log(el));
