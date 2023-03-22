@@ -175,12 +175,36 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
     }
 }
 
-const bst = new BinarySearchTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-bst.insert(6);
-bst.insert(5);
-prettyPrint(bst.root);
+const getRandInt = max => Math.floor(Math.random() * max);
+const arrOfRandomNum = size => !size ? []:[getRandInt(100), ...arrOfRandomNum(--size)];
 
-bst.reBalance();
+run();
+
+function run(){
+    const bst = new BinarySearchTree(arrOfRandomNum(15));
+    prettyPrint(bst.root);
+    console.log(bst.isBalanced());
+
+    console.log(bst.levelOrder());
+    console.log(bst.preOrder());
+    console.log(bst.inOrder());
+    console.log(bst.postOrder());
+
+    // unbalance tree
+    bst.insert(101);
+    bst.insert(102);
+    bst.insert(103);
+    bst.insert(104);
+    prettyPrint(bst.root);
+    console.log(bst.isBalanced());
 
 
-prettyPrint(bst.root);
+    bst.reBalance();
+    prettyPrint(bst.root);
+    console.log(bst.isBalanced());
+
+    console.log(bst.levelOrder());
+    console.log(bst.preOrder());
+    console.log(bst.inOrder());
+    console.log(bst.postOrder());
+}
