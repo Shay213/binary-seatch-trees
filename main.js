@@ -14,17 +14,17 @@ class BinarySearchTree{
     };
 
 
-    search = (root, value) => {
-        if(root === null || root.data === value) return root;
-        return value < root.data ? this.search(root.left, value) : this.search(root.right, value);
+    search = (value, node=this.root) => {
+        if(node === null || node.data === value) return node;
+        return value < node.data ? this.search(value, node.left) : this.search(value, node.right);
     };
 
-    insert = (root, value) => {
-        if(root === null) return new Node(value);
+    insert = (value, node=this.root) => {
+        if(node === null) return new Node(value);
 
-        value < root.data ? root.left = this.insert(root.left, value) : root.right = this.insert(root.right, value);
+        value < node.data ? node.left = this.insert(value, node.left) : node.right = this.insert(value, node.right);
 
-        return root;
+        return node;
     };
 
     minValue = root => {
@@ -36,30 +36,26 @@ class BinarySearchTree{
         return minV;
     };
 
-    delete = (root, value) => {
-        if(root === null) return root;
-        else if(value < root.data) root.left = this.delete(root.left, value);
-        else if(value > root.data) root.right = this.delete(root.right, value);
+    delete = (value, node=this.root) => {
+        if(node === null) return node;
+        else if(value < node.data) node.left = this.delete(value, node.left);
+        else if(value > node.data) node.right = this.delete(value, node.right);
         else{
-            //node with only one child
-            if(root.left === null) return root.right;
-            else if(root.right === null) return root.left;
+            if(node.left === null) return node.right;
+            else if(node.right === null) return node.left;
             
-            // node with two children: Get the inOrder successor (smallest in the right subtree)
-            root.data = this.minValue(root.right);
-            
-            // delete the inOrder successor
-            root.right = this.delete(root.right, root.data);
+            node.data = this.minValue(node.right);
+            node.right = this.delete(node.data, node.right);
         }
 
-        return root;
+        return node;
     };
 
-    levelOrder = (root, callback) => {
-        if(root === null) return;
+    levelOrder = (callback, node=this.root) => {
+        if(node === null) return;
         let queue = [];
         let values = [];
-        queue.push(root);
+        queue.push(node);
         
         while(!!queue.length){
             const [firstEl] = queue.splice(0,1);
@@ -70,42 +66,71 @@ class BinarySearchTree{
         if(!callback) return values;
     };
 
-    preOrder = (root, callback, result = []) => {
-        if(root === null) return;
+    preOrder = (node=this.root, callback) => {
+        if(node === null) return [];
 
-        callback ? callback(root) : result.push(root);
-        this.preOrder(root.left, callback, result);
-        this.preOrder(root.right, callback, result);
-        if(!callback) return result;
+        if(callback){
+            callback(node);
+            this.preOrder(node.left, callback);
+            this.preOrder(node.right, callback);
+        }else{
+            return[
+                node,
+                ...this.preOrder(node.left),
+                ...this.preOrder(node.right),
+            ];
+        }
     };
 
-    inOrder = (root, callback, result = []) => {
-        if(root === null) return;
+    inOrder = (node=this.root, callback) => {
+        if(node === null) return [];
 
-        this.inOrder(root.left, callback, result);
-        callback ? callback(root) : result.push(root);
-        this.inOrder(root.right, callback, result);
-        if(!callback) return result;
+        if(callback){
+            this.inOrder(node.left, callback);
+            callback(node);
+            this.inOrder(node.right, callback);
+        }else{
+            return[
+                ...this.inOrder(node.left),
+                node,
+                ...this.inOrder(node.right),
+            ];
+        }
     };
 
-    postOrder = (root, callback, result = []) => {
-        if(root === null) return;
+    postOrder = (node=this.root, callback) => {
+        if(node === null) return [];
 
-        this.postOrder(root.left, callback, result);
-        this.postOrder(root.right, callback, result);
-        callback ? callback(root) : result.push(root);
-        if(!callback) return result;
+        if(callback){
+            this.postOrder(node.left, callback);
+            this.postOrder(node.right, callback);
+            callback(node);
+        }else{
+            return[
+                ...this.postOrder(node.left),
+                ...this.postOrder(node.right),
+                node,
+            ];
+        }
     };
 
-    height = root => {
-        if(root === null) return -1;
+    height = (node=this.root) => {
+        if(node === null) return -1;
         
-        let right = this.height(root.right);
-        let left = this.height(root.left);
+        let right = this.height(node.right);
+        let left = this.height(node.left);
         
         right < left ? left++ : right++;
 
         return left > right ? left:right;
+    };
+
+    depth = (node, currNode=this.root) => {
+        if(currNode === null || currNode.data === node.data) return 0;
+    
+        let sum = node.data < currNode.data ? this.depth(node, currNode.left) : this.depth(node, currNode.right);
+
+        return ++sum;
     };
 }
 
@@ -133,4 +158,7 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 const bst = new BinarySearchTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 prettyPrint(bst.root);
 
-console.log(bst.height(bst.root));
+bst.delete(3);
+bst.insert(3);
+
+prettyPrint(bst.root);
