@@ -71,28 +71,41 @@ class BinarySearchTree{
     };
 
     preOrder = (root, callback, result = []) => {
-        if(!root) return;
+        if(root === null) return;
 
         callback ? callback(root) : result.push(root);
         this.preOrder(root.left, callback, result);
         this.preOrder(root.right, callback, result);
         if(!callback) return result;
     };
+
     inOrder = (root, callback, result = []) => {
-        if(!root) return;
+        if(root === null) return;
 
         this.inOrder(root.left, callback, result);
         callback ? callback(root) : result.push(root);
         this.inOrder(root.right, callback, result);
         if(!callback) return result;
     };
+
     postOrder = (root, callback, result = []) => {
-        if(!root) return;
+        if(root === null) return;
 
         this.postOrder(root.left, callback, result);
         this.postOrder(root.right, callback, result);
         callback ? callback(root) : result.push(root);
         if(!callback) return result;
+    };
+
+    height = root => {
+        if(root === null) return -1;
+        
+        let right = this.height(root.right);
+        let left = this.height(root.left);
+        
+        right < left ? left++ : right++;
+
+        return left > right ? left:right;
     };
 }
 
@@ -120,4 +133,4 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 const bst = new BinarySearchTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 prettyPrint(bst.root);
 
-bst.postOrder(bst.root, el => console.log(el));
+console.log(bst.height(bst.root));
