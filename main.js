@@ -114,15 +114,15 @@ class BinarySearchTree{
         }
     };
 
-    height = (node=this.root) => {
+    height = (node=this.root, callback) => {
         if(node === null) return -1;
         
         let right = this.height(node.right);
         let left = this.height(node.left);
-        
-        right < left ? left++ : right++;
 
-        return left > right ? left:right;
+        if(callback) callback(left, right);
+
+        return Math.max(left, right) + 1;
     };
 
     depth = (node, currNode=this.root) => {
@@ -131,6 +131,26 @@ class BinarySearchTree{
         let sum = node.data < currNode.data ? this.depth(node, currNode.left) : this.depth(node, currNode.right);
 
         return ++sum;
+    };
+
+    isBalanced = (node=this.root) => {
+        if(node === null) return true;
+
+        let balanced = true;
+        this.height(node, (left, right) => {
+            if(left === false || right === false || Math.abs(left-right) >= 2){
+                balanced = false;
+                return;
+            }
+        });
+        return balanced;
+    };
+
+    reBalance = () => {
+        let arr = [];
+        this.inOrder(this.root, node => arr.push(node.data));
+        this.array = arr.filter((el, i, arr) => arr.indexOf(el) === i);
+        this.root = this.buildTree();
     };
 }
 
@@ -156,9 +176,11 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 }
 
 const bst = new BinarySearchTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+bst.insert(6);
+bst.insert(5);
 prettyPrint(bst.root);
 
-bst.delete(3);
-bst.insert(3);
+bst.reBalance();
+
 
 prettyPrint(bst.root);
